@@ -1,6 +1,6 @@
 # step one of assembling the dataset
 # scans Project Gutenberg's most popular books and generates a list of them
-# does not download the actual text from the book yet, just collects titles and download links
+# does not download the actual text from the book yet, just collects metadata
 
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
 import pandas as pd            # pip install pandas
@@ -42,7 +42,6 @@ def generate_books_list(pages):
         book_links = soup.find_all(class_='booklink')
         for book_link in book_links:
             # get the title of the book
-            # we don't really NEED to save the title yet (it's available in the metadata), but it's useful for reference
             title = book_link.find(class_='title').string.strip()
             # get the ID that the book is located at in Project Gutenberg
             # this can be used to access the book at https://www.gutenberg.org/ebooks/ID (replace ID with the book ID)
@@ -50,10 +49,10 @@ def generate_books_list(pages):
             # this will cause issues if we ever parse something that is not an ebook, but we are in the ebooks section
             link_id = book_link.find("a", href=True)["href"].strip()[8:]
             # show the user the book
-            print(f'    Indexed {title} - {link_id}')
+            print(f'    Added {title} - {link_id}')
             # add the current book to the books dictionary
             books['title'].append(title)
-            books['link_id'].append(link_id)
+            books['catalog_number'].append(link_id)
 
         # don't spam web requests to quickly or our scraper will get IP blocked
         # this sleep statement will limit the number of times we query the website per second
@@ -64,7 +63,7 @@ def generate_books_list(pages):
 
 def save_books_list(books_list):
     df = pd.DataFrame(books_list)
-    df.to_csv('books.csv')
+    df.to_csv('books.csv', index=False)
 
 
 if __name__ == "__main__":
