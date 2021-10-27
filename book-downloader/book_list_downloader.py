@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
 import pandas as pd            # pip install pandas
+import pathlib
 import requests
 import time
 from os.path import exists
@@ -13,7 +14,8 @@ def main():
         if not exists(f'{num}.txt'):
             r = requests.get(f'http://gutenberg.org/files/{num}/{num}-0.txt', allow_redirects=True)
             r.encoding = 'utf-8-sig'
-            with open(f'{num}.txt', 'w', encoding="utf-8") as f:
+            pathlib.Path(f'./books/{num}').mkdir(parents=True, exist_ok=True)
+            with open(f'./books/{num}/{num}_rawdata.txt', 'w', encoding="utf-8") as f:
                 f.write(r.text)
 
 
