@@ -6,13 +6,13 @@ from os.path import exists
 
 def main():
     books = load_csv()
-    #print(books)
 
     print('Downloading data for books.csv.')
     print('If your internet is slow this may take a while.')
     for num in books['catalog_number']:
         if not exists(f'{num}.txt'):
             r = requests.get(f'http://gutenberg.org/files/{num}/{num}-0.txt', allow_redirects=True)
+            r.encoding = 'utf-8-sig'
             with open(f'{num}.txt', 'w', encoding="utf-8") as f:
                 f.write(r.text)
 
