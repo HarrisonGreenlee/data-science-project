@@ -11,13 +11,15 @@ def main():
     print('Downloading data for books.csv.')
     print('If your internet is slow this may take a while.')
     for num in books['catalog_number']:
-        if not exists(f'{num}.txt'):
+        if not exists(f'./books/{num}/{num}_rawdata.txt'):
             r = requests.get(f'http://gutenberg.org/files/{num}/{num}-0.txt', allow_redirects=True)
             r.encoding = 'utf-8-sig'
             pathlib.Path(f'./books/{num}').mkdir(parents=True, exist_ok=True)
             with open(f'./books/{num}/{num}_rawdata.txt', 'w', encoding="utf-8") as f:
                 f.write(r.text)
-
+            print(f'    Successfully Downloaded: {num}')
+        else:
+            print(f'    Already downloaded:      {num}')
 
 def load_csv():
     """
