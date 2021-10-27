@@ -2,14 +2,19 @@ from bs4 import BeautifulSoup  # pip install beautifulsoup4
 import pandas as pd            # pip install pandas
 import requests
 import time
+from os.path import exists
 
 def main():
     books = load_csv()
-    print(books)
+    #print(books)
 
     print('Downloading data for books.csv.')
     print('If your internet is slow this may take a while.')
-
+    for num in books['catalog_number']:
+        if not exists(f'{num}.txt'):
+            r = requests.get(f'http://gutenberg.org/files/{num}/{num}-0.txt', allow_redirects=True)
+            with open(f'{num}.txt', 'w', encoding="utf-8") as f:
+                f.write(r.text)
 
 
 def load_csv():

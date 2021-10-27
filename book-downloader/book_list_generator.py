@@ -28,7 +28,7 @@ def main():
 
 def generate_books_list(pages):
     # use this dict format so we can easily convert it into a dataframe later
-    books = {'title':[], 'link_id':[]}
+    books = {'title':[], 'catalog_number':[]}
 
     for page_num in range(pages):
         # there are 25 entries per page, starting with entry #1
@@ -63,6 +63,7 @@ def generate_books_list(pages):
 
 def save_books_list(books_list):
     df = pd.DataFrame(books_list)
+    # save the dataframe
     df.to_csv('books.csv', index=False)
 
 
