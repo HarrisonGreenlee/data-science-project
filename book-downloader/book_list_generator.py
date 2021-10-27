@@ -6,24 +6,26 @@ from bs4 import BeautifulSoup  # pip install beautifulsoup4
 import pandas as pd            # pip install pandas
 import requests
 import time
-
+from os.path import exists
 
 def main():
-    confirmation = input('Running this program will delete books.csv if it already exists. Type "y" to confirm: ')
-    if confirmation.lower() == 'y':
-        print('Each page of Project Gutenberg has 25 ebooks on it.')
-        pages_to_read = input('How many pages would you like to index? ')
+    if exists('books.csv'):
+        confirmation = input('Running this program will delete your existing books.csv file. Type "y" to confirm: ')
+        if not confirmation.lower() == 'y':
+            return
 
-        # safely convert user input to an integer, asking them for correct input if necessary
-        while not isinstance(pages_to_read, int):
-            try:
-                pages_to_read = int(pages_to_read)
-            except ValueError:
-                print('Invalid selection. Please enter a number.')
-                pages_to_read = input('How many pages would you like to index? ')
-        save_books_list(generate_books_list(pages_to_read))
-        print()
-        print('DONE! Check books.csv.')
+    print('Each page of Project Gutenberg has 25 ebooks on it.')
+    pages_to_read = input('How many pages would you like to index? ')
+    # safely convert user input to an integer, asking them for correct input if necessary
+    while not isinstance(pages_to_read, int):
+        try:
+            pages_to_read = int(pages_to_read)
+        except ValueError:
+            print('Invalid selection. Please enter a number.')
+            pages_to_read = input('How many pages would you like to index? ')
+    save_books_list(generate_books_list(pages_to_read))
+    print()
+    print('DONE! Check books.csv.')
 
 
 def generate_books_list(pages):
