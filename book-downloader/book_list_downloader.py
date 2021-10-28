@@ -5,7 +5,26 @@ import requests
 import time
 from os.path import exists
 
+from book_download_verifier import verify_book_downloads
+
 def main():
+    download_books()
+    # ensure downloaded books are valid
+    # if they are not, remove them and try to download them again
+    # limit the number of times we try this to prevent an infinite loop
+    for attempt in range(3):
+        if not verify_book_downloads():
+            print('Download failed. Re-downloading malformed downloads.')
+            download_books()
+    if verify_book_downloads(delete_malformed_downloads=False):
+        print('All books successfully downloaded.')
+    else:
+        print('Books could not be successfully installed.')
+        print('Try connecting to a more reliable network and trying again.')
+        print('NOTE: this could also be caused by a book with non-standard formatting.')
+
+
+def download_books():
     books = load_csv()
 
     print('Downloading data for books.csv.')
@@ -18,6 +37,9 @@ def main():
             with open(f'./books/{num}/{num}_rawdata.txt', 'w', encoding="utf-8") as f:
                 f.write(r.text)
             print(f'    Successfully Downloaded: {num}')
+            # wait a bit before the next download to prevent overloading Project Gutenberg servers and getting IP banned
+            # lowering this will massively increase download speed, if necessary
+            time.sleep(1)
         else:
             print(f'    Already downloaded:      {num}')
 
