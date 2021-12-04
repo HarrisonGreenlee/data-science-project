@@ -4,7 +4,7 @@
 
 from bs4 import BeautifulSoup  # pip install beautifulsoup4
 import pandas as pd            # pip install pandas
-import requests
+import requests                # pip install requests
 import time
 from os.path import exists
 
