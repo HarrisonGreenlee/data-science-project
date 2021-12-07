@@ -18,6 +18,7 @@ from matplotlib import rcParams
 from wordcloud import STOPWORDS, WordCloud  # pip install wordcloud
 from nltk.corpus import gutenberg
 from book_processor import remove_header_footer
+from additional_stop_words import additional_stop_words
 
 
 def tag_parts_of_speech(text):
@@ -33,46 +34,10 @@ def tag_parts_of_speech(text):
 def add_to_stopwords(stopwords):
     """
     function that adds stopwords to the stopwords list used
-    when creating a word cloud.
+    when creating a word cloud
     """
-    additional_stop_words = [
-        "might",
-        "went",
-        "though",
-        "thus",
-        "whose",
-        "will",
-        "know",
-        "said",
-        "well",
-        "thought",
-        "must",
-        "nothing",
-        "began",
-        "upon",
-        "although",
-        "many",
-        "much",
-        "sometimes",
-        "replied",
-        "reply",
-        "come",
-        "came",
-        "every",
-        "even",
-        "sure",
-        "seemed",
-        "take",
-        "added",
-        "tried",
-        "without",
-        "going",
-        "getting",
-        "anything",
-        "make",
-        "took",
-    ]
-    stopwords.update(additional_stop_words)
+    more_stop_words = additional_stop_words
+    stopwords.update(more_stop_words)
     return stopwords
 
 
