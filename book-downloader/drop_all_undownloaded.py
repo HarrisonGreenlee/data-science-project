@@ -16,7 +16,7 @@ def main():
         print('Could not find books.csv.')
         return
 
-    df = pd.read_csv('trimmed_books.csv')
+    df = pd.read_csv('books.csv')
 
     indices_to_delete = []
     for ind in df.index:
