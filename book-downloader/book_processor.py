@@ -4,7 +4,12 @@ Book Processor
 A collection of functions that are used to process books (i.e. remove header/footer, tokenize, vectorize, etc.)
 '''
 
-
+import fileinput
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize
+import re
+import os
 
 def remove_header_footer(inpBookStr):
 
@@ -65,3 +70,87 @@ def remove_header_footer(inpBookStr):
     outBookStr = outBookStr.lower()
 
     return outBookStr
+
+
+# function to lemmatize a book file
+def lemmatizeFile(inpData):
+
+    outText = ""
+    lemmatizer = WordNetLemmatizer()
+
+    # get list of sentences
+    a_list = sent_tokenize(inpData)
+
+    processed_features = []
+
+    for sentence in range(0, len(a_list)):
+
+        # Remove all the special characters
+        processed_feature = re.sub(r'\W', ' ', str(a_list[sentence]))
+
+        # Substituting multiple spaces with single space
+        processed_feature = re.sub(r'\s+', ' ', processed_feature, flags=re.I)
+
+        processed_features.append(processed_feature)
+
+
+    for sentence in processed_features:
+
+        currentSentence = ""
+
+        # Tokenize: Split the sentence into words
+        word_list = word_tokenize(sentence)
+
+        for i in word_list:
+
+            lemmaSent = lemmatizer.lemmatize(i)
+
+            currentSentence += str(lemmaSent)
+
+        # Lemmatize list of words and join
+        lemmatized_output = ' '.join([lemmatizer.lemmatize(w) for w in word_list])
+
+        # add sentence to output text
+
+        outText+=str(' ' + lemmatized_output)
+
+    return outText
+    
+
+# get path of all books
+filename = os.getcwd() + '\\books\\'
+
+
+# set up list for storing file addresses
+filelist = []
+
+# store file address by running through directory
+for root, dirs, files in os.walk(filename):
+	for file in files:
+        #append the file name to the list
+		filelist.append(os.path.join(root,file))
+
+
+# open each file in the list and lemmatize
+for fileName in filelist:
+
+    with open(fileName, 'r', encoding="utf-8") as f:
+        data = f.read().rstrip()
+
+    newData = lemmatizeFile(data)
+
+    # WARNING: Enabling this line of code will delete the old non-lemmatized file. USE WITH CAUTION
+    #os.remove(fileName)
+
+    outFile = fileName[:-4]
+
+    # save as a different file type to mark the file has been lemmatized
+    outFile += "-LEMMA.txt"
+
+    # save as a new file
+    with open(outFile, "w", encoding="utf-8") as text_file:
+        text_file.write(newData)
+
+    
+
+
